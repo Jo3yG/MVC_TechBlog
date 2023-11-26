@@ -96,7 +96,7 @@ router.post('/', Auth, (req, res) => {
         res.status(500).json(err);
     });
 });
-router.put('/id:', Auth, (req, res) => {
+router.put('/:id', Auth, (req, res) => {
     Post.update({
         title: req.body.title,
         content: req.body.content,
@@ -118,3 +118,22 @@ router.put('/id:', Auth, (req, res) => {
         res.status(500).json(err);
     });
 });
+router.delete('/id:', Auth, (req, res) => {
+    Post.destroy({
+        where:{
+            id: req.params.id
+        }
+    })
+    .then(dbPostData => {
+        if (!dbPostData) {
+            res.status(404).json({ message:'No post with ID provided'});
+            return;
+        }
+        res.json(dbPostData);
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json(err);
+    });
+});
+Module.exports = router;
