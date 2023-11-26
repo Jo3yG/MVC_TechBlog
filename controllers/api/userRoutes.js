@@ -1,4 +1,15 @@
-
+const router = require('express').Router();
+const {User, Post, Comment} = require('../../models');
+router.get('/', (req, res) => {
+    User.findAll({
+        attributes: {exclude: ['password']}
+    })
+    .then(dbUserData => res.json(dbUserData))
+    .catch(err => {
+        console.log(err);
+        res.status(500).json(err);
+    });
+});
 
 router.post('/', (req, res) => {
     User.create({
@@ -6,6 +17,7 @@ router.post('/', (req, res) => {
         password: req.body.password
     })
     .then(dbUserData => {
+        req.session.save(() => {
         req.session.user_id = dbUserData.id;
         req.session.username = dbUserData.username;
         req.session.loggedIn = true;
@@ -15,6 +27,7 @@ router.post('/', (req, res) => {
 .catch(err => {
     console.log(err);
     res.status(500).json(err);
+});
 });
 router.post('/login', (req, res) => {
     User.findOne({
