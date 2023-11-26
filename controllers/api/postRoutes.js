@@ -96,3 +96,25 @@ router.post('/', Auth, (req, res) => {
         res.status(500).json(err);
     });
 });
+router.put('/id:', Auth, (req, res) => {
+    Post.update({
+        title: req.body.title,
+        content: req.body.content,
+    },
+    {
+        where:{
+            id: req.params.id
+        }
+    })
+    .then(dbPostData => {
+        if (!dbPostData) {
+            res.status(404).json({message: 'No post with ID provided'});
+            return;
+        }
+        res.json(dbPostData);
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json(err);
+    });
+});
