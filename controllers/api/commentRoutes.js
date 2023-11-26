@@ -56,3 +56,23 @@ router.put('/:id', Auth, (req,res) => {
          res.status(500).json(err);
     });
     });
+    router.delete('/:id', Auth, (req,res) => {
+        Comment.destroy({
+            where: {
+                id: req.params.id
+            }
+        })
+        .then(dbCommentData => {
+            if (!dbCommentData) {
+                res.status(404).json({ message: 'No comment with ID provided'});
+                return;
+            }
+                req.json(dbCommentData);
+        })
+        .catch(err => {
+             console.log(err);
+             res.status(500).json(err);
+        });
+        });
+
+module.exports = router;
